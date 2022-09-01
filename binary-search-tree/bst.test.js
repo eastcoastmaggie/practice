@@ -83,3 +83,143 @@ test('levelOrder of in tree ',() => {
     expect(newTree.levelOrder()).toContain('A');
     expect(newTree.levelOrder()).toContain(12);
 });
+test('inorder of in tree ',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,4,3,2,5,6,7]);
+    let inOrder = newTree.inorder();
+    expect(inOrder).toContain(1);
+    expect(inOrder).toContain(3);
+    expect(inOrder).toContain(2);
+    expect(inOrder).toContain(4);
+    expect(inOrder).toEqual([1,2,3,4,5,6,7]);
+});
+test('preorder of in tree ',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,4,3,2,5,6,7]);
+    let preOrder = newTree.preorder();
+    expect(preOrder).toContain(1);
+    expect(preOrder).toContain(3);
+    expect(preOrder).toContain(2);
+    expect(preOrder).toContain(4);
+    expect(preOrder).toEqual([4,2,1,3,6,5,7]);
+});
+test('postorder of in tree ',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+    let postOrder = newTree.postorder();
+    expect(postOrder).toContain(1);
+    expect(postOrder).toContain(3);
+    expect(postOrder).toContain(2);
+    expect(postOrder).toEqual([1,3,2,6,7,5]);
+});
+test('postorder of in tree with function ',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+    let myFunction = function(node){
+        return (node.value + 2);
+    };
+    let postOrder = newTree.postorder(myFunction);
+    expect(postOrder).toContain(3);
+    expect(postOrder).toContain(5);
+    expect(postOrder).toContain(4);
+    expect(postOrder).toEqual([3,5,4,8,9,7]);
+});
+test('height of root is 3',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.height(newTree.root);
+    expect(height).toEqual(3);
+    
+});
+test('height of root.leftChild is 2',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.height(newTree.root.leftChild);
+    expect(height).toEqual(2);
+    
+});
+test('height of root.rightChild is 1',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.height(newTree.root.rightChild.leftChild);
+    expect(height).toEqual(1);
+    
+});
+test('depth of root.rightChild is 1',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.depth(newTree.root.rightChild);
+    expect(height).toEqual(1);
+    
+});
+test('depth of root is 0',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.depth(newTree.root);
+    expect(height).toEqual(0);
+    
+});
+test('depth of root.rightChild.leftChild is 2',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let height = newTree.depth(newTree.root.rightChild.leftChild);
+    expect(height).toEqual(2);
+    
+});
+test('tree is balanced',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2,5,6,7]);
+
+    let balance = newTree.isBalanced();
+    expect(balance).toEqual(true);
+    
+});
+test('tree is not balanced',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2]);
+    newTree.insert(98);
+    newTree.insert(97);
+    newTree.insert(18);
+
+    let balance = newTree.isBalanced();
+    expect(balance).toEqual(false);
+    
+});
+test('tree is balanced after rebalancing',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2]);
+    newTree.insert(98);
+    newTree.insert(97);
+    newTree.insert(18);
+    newTree.rebalance();
+
+    let balance = newTree.isBalanced();
+    expect(balance).toEqual(true);
+    
+});
+test('tree is balanced after rebalancing',() => {
+    let  newTree = tree();
+    newTree.buildTree([1,3,2]);
+    newTree.insert(98);
+    newTree.delete(1);
+    newTree.insert(97);
+    newTree.insert(18);
+    expect(newTree.isBalanced()).toEqual(false);
+    expect(newTree.inorder()).toEqual([2,3,18,97,98]);
+    expect(newTree.preorder()).toEqual([2,3,98,97,18]);
+    expect(newTree.postorder()).toEqual([18,97,98,3,2]);
+
+    newTree.rebalance();
+    expect(newTree.inorder()).toEqual([2,3,18,97,98]);
+    expect(newTree.preorder()).toEqual([18,3,2,98,97]);
+    expect(newTree.postorder()).toEqual([2,3,97,98,18]);
+
+    expect(newTree.isBalanced()).toEqual(true);
+    
+});

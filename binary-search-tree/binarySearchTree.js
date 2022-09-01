@@ -32,7 +32,7 @@ const treeProto = {
             return this;
         }
         let currentNode = this.root;
-        while(currentNode != null){
+        while(currentNode.value != null){
             if(value <= currentNode.value){
                 if (currentNode.leftChild.value != null){
                     currentNode = currentNode.leftChild;
@@ -56,6 +56,9 @@ const treeProto = {
             return subTreeRoot;
         }
         return this.findSmallest(subTreeRoot.leftChild);
+    },
+    isLeaf(node){
+        return (node.leftChild == null || node.leftChild.value == null) && (node.rightChild == null || node.rightChild.value == null);  
     },
     delete(value) {
         // Find node
@@ -97,7 +100,7 @@ const treeProto = {
                     return this;
                 }
                 // has left child only
-                if (currentNode.leftChild != null){
+                if (currentNode.leftChild.value != null){
                     if (nodeParent.value > value){
                             nodeParent.leftChild = currentNode.leftChild;
                     } else {
@@ -106,7 +109,7 @@ const treeProto = {
                     return this;
                 }
                 // has right child only
-                if (currentNode.rightChild != null){
+                if (currentNode.rightChild.value != null){
                     if (nodeParent.value < value){
                             nodeParent.leftChild = currentNode.rightChild;
                     } else {
@@ -159,15 +162,207 @@ const treeProto = {
     },
     // functions should traverse the tree in their respective depth-first order 
     // and yield each node to the provided function given as an argument
-    inorder(){
+    // left-root-right
+    inorder(func = null, root = this.root){
+        let results = [];
+        if (this.isLeaf(root)){
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            return results
+        } else {
+            
+            if (root.leftChild != null && root.leftChild.value != null){
+                results = results.concat(this.inorder(func, root.leftChild));
+            }
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            if (root.rightChild != null && root.rightChild.value != null){
+                results = results.concat(this.inorder(func, root.rightChild));
+            }
+            
+            return results;
+        }
+    },
+
+    // inorder(func = null){
+    //     let stack = [this.root];
+    //     let currentNode = this.root;
+    //     let results = [];
+    //     let traverseDown = true;
+    //     while(stack.length > 0){
+    //         if((currentNode.leftChild != null &&  currentNode.leftChild.value != null) && traverseDown ){
+    //             stack.push(currentNode.leftChild);
+    //         } else {
+    //             traverseDown = false;
+    //             // do the thing
+    //             if(func != null){
+    //                 results.push(func(currentNode.value));
+    //             } else {
+    //                 results.push(currentNode.value);
+    //             }
+    //             stack.pop();
+    //             // push right child
+    //             if(currentNode.rightChild.value != null ){
+    //                 traverseDown = true;
+    //                 stack.push(currentNode.rightChild);
+    //             }
+    //         }
+    //         currentNode = stack[stack.length - 1];
+    //     }
+    //     return results;
+        
+    // },
+    preorder(func = null, root = this.root){
+        let results = [];
+        if (this.isLeaf(root)){
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            return results
+        } else {
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            if (root.leftChild != null && root.leftChild.value != null){
+                results = results.concat(this.preorder(func, root.leftChild));
+            }
+            if (root.rightChild != null && root.rightChild.value != null){
+                results = results.concat(this.preorder(func, root.rightChild));
+            }
+            
+            return results;
+        }
+    },
+        // preorderNoRec(func = null){
+        // let stack = [this.root];
+        // let currentNode = this.root;
+        // let results = [];
+        // let traverseDown = true;
+        // while(stack.length > 0){
+        //     if (traverseDown){
+        //         traverseDown = false;
+        //         if(func != null){
+        //             results.push(func(currentNode.value));
+        //         } else {
+        //             results.push(currentNode.value);
+        //         }
+        //         if (currentNode.leftChild != null && currentNode.leftChild.value != null){
+        //             traverseDown = true;
+        //             stack.push(currentNode.leftChild);
+        //         }        
+        //     } else {
+        //         traverseDown = false;     
+        //         stack.pop();
+        //         // push right child
+        //         if(currentNode.rightChild.value != null ){
+        //             traverseDown = true;
+        //             stack.push(currentNode.rightChild);
+        //         }
+        //     }
+        //     currentNode = stack[stack.length - 1];
+        // }
+        // return results;
+
+    // }, 
+    postorder(func = null, root = this.root){
+        let results = [];
+        if (this.isLeaf(root)){
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            return results
+        } else {
+            if (root.leftChild != null && root.leftChild.value != null){
+                results = results.concat(this.postorder(func, root.leftChild));
+            }
+            if (root.rightChild != null && root.rightChild.value != null){
+                results = results.concat(this.postorder(func, root.rightChild));
+            }
+            if(func != null){
+                results.push(func(root));
+            } else {
+                results.push(root.value);
+            }
+            return results;
+        }
 
     },
-    preorder(){
+    // Function which accepts a node and returns its height. 
+    // Height is defined as the number of edges in longest path from a given node to a leaf node.
+    height(node){
+        let heightLeft = 0;
+        let heightRight = 0;
+        if (this.isLeaf(node)){
+            return 1;
+        } else{
 
-    }, 
-    postorder(){
+            if (node.leftChild != null && node.leftChild.value != null){
+                heightLeft = 1 + this.height(node.leftChild);
+            }
+            if (node.rightChild != null && node.rightChild.value != null){
+                heightRight = 1 + this.height(node.rightChild);
+            }
+            return heightLeft > heightRight ? heightLeft : heightRight;
+        }
+    },
+    // Function which accepts a node and returns its depth. 
+    // Depth is defined as the number of edges in path from a given node to the tree’s root node.
+    depth(node, root = this.root){
+        let depth = 0;
+        if (root == node){
+            return 0;
+        } else{
 
+            if (node.value < root.value){
+                depth = 1 + this.depth(node, root.leftChild);
+            } else {
+                depth = 1 + this.depth(node, root.rightChild);
+            }
+            return depth;
+        }
+    },
+    // isBalanced function which checks if the tree is balanced. 
+    // A balanced tree is one where the difference between heights of left subtree and right subtree of 
+    // every node is not more than 1.
+    isBalanced(root = this.root){
+        if (this.isLeaf(root) == true){
+            return true;
+        } else {
+            let heightLeft = 0;
+            let heightRight = 0;
+            if (root.leftChild != null && root.leftChild.value != null){
+                heightLeft = this.height(root.leftChild);
+            }
+            if (root.rightChild != null && root.rightChild.value != null){
+                heightRight = this.height(root.rightChild);
+            }
+            if (-1 <= (heightLeft - heightRight) && (heightLeft - heightRight) <= 1 ){
+                return true;
+            }
+            return false;
+        }
+    },
+    //rebalance function which rebalances an unbalanced tree. 
+    rebalance(){
+        if (this.isLeaf(this.root)){
+            return this;
+        } else {
+            return this.buildTree(this.inorder());
+        }
     }
+    
     // toString() {
     //     // returns string representing list  ( value ) -> ( value ) -> ( value ) -> null
     //     if(this.head == null) {
