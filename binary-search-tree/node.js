@@ -1,20 +1,8 @@
-const node = () => {
+const node = (data = null) => {
     return {
-        value : {
-            value : null,
-            writable : true,
-            configurable : true,
-        },
-        leftChild : {
-            value : null,
-            writable : true,
-            configurable : true,
-        },
-        rightChild : {
-            value : null,
-            writable : true,
-            configurable : true,
-        }
+        value :  data,
+        leftChild : null,
+        rightChild : null
     };
 };
 module.exports = node;
